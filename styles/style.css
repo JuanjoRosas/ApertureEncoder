@@ -122,6 +122,8 @@ main{
 }
 
 .main__input__bloque__texto{
+    display: flex;
+    box-sizing: border-box;
     resize: none;
     font-family: var(--fuente-default);
     font-size: 1.3rem;
@@ -156,6 +158,29 @@ main{
 
 .main__input__bloque__texto:focus{
     outline: none !important;
+}
+
+.main__input__bloque__texto__writer{
+    text-overflow:ellipsis;
+    overflow-wrap: break-word;
+    text-wrap: wrap;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.main__input__bloque__texto:focus > span > .main__input__bloque__texto__caret {
+    animation: blink 1s step-end infinite;
+    border-bottom: 1px solid var(--color-primario);
+  }
+  
+@keyframes blink {
+    from,
+    to {
+        border-color: transparent;
+    }
+    50% {
+        border-color: var(--color-primario);
+    }
 }
 
 .main__input__botones{
