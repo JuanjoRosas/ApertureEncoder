@@ -29,8 +29,8 @@
                 </div>
             </div>
             <div class="main__input__botones">
-                <button class="main__input__botones__boton"><p class="boton__codeSymbol">&gt;&nbsp;</p>encriptar</button>
-                <button class="main__input__botones__boton"><p class="boton__codeSymbol">&gt;&nbsp;</p>desencriptar</button>
+                <button class="main__input__botones__boton" onclick="encriptarTextoWriter();"><p class="boton__codeSymbol">&gt;&nbsp;</p>encriptar</button>
+                <button class="main__input__botones__boton" onclick="desencriptarTextoWriter();"><p class="boton__codeSymbol">&gt;&nbsp;</p>desencriptar</button>
             </div>
         </div>
         <div class="main__output">
@@ -40,16 +40,16 @@
                     <div class="main__output__bloque__top2bot">
                         <div class="main__output__bloque__hBorder"></div>
                         <div class="main__output__bloque__espacioContenido">
-                            <div class="main__output__bloque__espacioImagen">
+                            <div class="main__output__bloque__espacioImagen" id="div_imagen">
                                 <img src="assets/ascii_gif.gif" alt="secuencia de imagenes ascii" class="main__output__bloque__imagenASCII" />
                                 <span class="main__output__bloque__txtImagen">ERR 404: NO SE ENCONTRÓ TEXTO</span>
                             </div>
-                            <div class="main__output__bloque__espacioTxtBtn">
+                            <div class="main__output__bloque__espacioTxtBtn hiden" id="div_reader">
                                 <div class="main__output__bloque__texto">
-                                    <span class="main__output__bloque__texto__reader">>&nbsp;sdfkajsdñf<span class="main__output__bloque__texto__caret" id="caret_reader">&nbsp;</span></span>
+                                    <span class="main__output__bloque__texto__reader" id="span_reader">>&nbsp;sdfkajsdñf<span class="main__output__bloque__texto__caret" id="caret_reader">&nbsp;</span></span>
                                 </div>
                                 <div class="main__output__bloque__botones">
-                                    <button class="main__output__bloque__botones__boton"><p class="boton__codeSymbol">&gt;&nbsp;</p>copiar texto</button>
+                                    <button onclick="botonReaderHandler();" class="main__output__bloque__botones__boton" id="button_reader"><p class="boton__codeSymbol" id="inicio_reader_buton">&gt;&nbsp;</p>copiar texto</button>
                                 </div>
                             </div>
                         </div>

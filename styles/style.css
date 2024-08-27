@@ -289,6 +289,10 @@ main{
     justify-content: center;
     align-items: center;
     gap: 2rem;
+    
+}
+
+.main__output__bloque__espacioImagen.hiden{
     display: none;
 }
 
@@ -311,7 +315,10 @@ main{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    
+}
+
+.main__output__bloque__espacioTxtBtn.hiden{
+    display: none;
 }
 
 .main__output__bloque__texto{
