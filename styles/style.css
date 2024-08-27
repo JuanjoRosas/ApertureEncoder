@@ -59,7 +59,7 @@ main{
     display: flex;
     flex-direction: column;
     align-items: start;
-    width: 45%;
+    width: 50%;
     gap: 1rem;
 }
 
@@ -76,6 +76,7 @@ main{
     width: 100%;
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     box-sizing: border-box;
 }
 
@@ -93,6 +94,7 @@ main{
     width: 100%;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     box-sizing: border-box;
 }
 
@@ -133,6 +135,7 @@ main{
     height: 100%;
     overflow-y: auto;
     background-color: rgba(255,255,255,0);
+    position: relative;
 }
 
 /* width */
@@ -166,14 +169,15 @@ main{
     text-wrap: wrap;
     box-sizing: border-box;
     width: 100%;
+    position: absolute;
 }
 
 .main__input__bloque__texto:focus > span > .main__input__bloque__texto__caret {
-    animation: blink 1s step-end infinite;
+    animation: blink_underscore 1s step-end infinite;
     border-bottom: 1px solid var(--color-primario);
   }
   
-@keyframes blink {
+@keyframes blink_underscore {
     from,
     to {
         border-color: transparent;
@@ -190,14 +194,21 @@ main{
 }
 
 .main__input__botones__boton{
+    font: var(--fuente-default);
     color: var(--color-primario);
+    background-color: transparent;
     font-size: 1.3rem;
+    font-weight: 200;
     text-decoration: none;
     display: flex;
 }
 
 .boton__codeSymbol{
     display: none;
+}
+
+.main__input__botones__boton:hover{
+    cursor: pointer;
 }
 
 .main__input__botones__boton:hover > .boton__codeSymbol{
@@ -207,6 +218,192 @@ main{
 /*
 *   OUTPUT
 */
+.main__output{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    width: 40%;
+    gap: 1rem;
+}
+
+.main__output__bloque{
+    color: var(--color-primario);
+    background-color: var(--color-secundario);
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.main__output__bloque__left2right{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.main__output__bloque__vBorder{
+    width: 1px;
+    /*BORDER*/
+    background-image: linear-gradient(var(--color-primario) 45%, rgba(255,255,255,0) 0%);
+    background-position: right;
+    background-size: 1px 30px;
+    background-repeat: repeat-y;
+}
+
+.main__output__bloque__top2bot{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.main__output__bloque__hBorder{
+    height: 1px;
+    /*BORDER*/
+    background-image: linear-gradient(to right, var(--color-primario) 75%, rgba(255,255,255,0) 0%);
+    background-position: bottom;
+    background-size: 10px 1px;
+    background-repeat: repeat-x;
+}
+
+.main__output__bloque__espacioContenido{
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    box-sizing: border-box;
+}
+
+.main__output__bloque__espacioImagen{
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    display: none;
+}
+
+.main__output__bloque__imagenASCII{
+    width: 50%;
+    box-sizing: border-box;
+}
+
+.main__output__bloque__txtImagen{
+    font-family: var(--fuente-default);
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--color-primario);
+}
+
+.main__output__bloque__espacioTxtBtn{
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    
+}
+
+.main__output__bloque__texto{
+    display: flex;
+    box-sizing: border-box;
+    resize: none;
+    font-family: var(--fuente-default);
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--color-primario);
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    background-color: rgba(255,255,255,0);
+    position: relative;
+}
+
+/* width */
+.main__output__bloque__texto::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+.main__output__bloque__texto::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0); 
+}
+
+/* Handle */
+.main__output__bloque__texto::-webkit-scrollbar-thumb {
+    background: var(--color-terciario); 
+}
+
+/* Handle on hover */
+.main__output__bloque__texto::-webkit-scrollbar-thumb:hover {
+    background: var(--color-terciario-hover);
+    cursor: default;
+}
+
+.main__output__bloque__texto:focus{
+    outline: none !important;
+}
+
+.main__output__bloque__texto__reader{
+    text-overflow:ellipsis;
+    overflow-wrap: break-word;
+    text-wrap: wrap;
+    box-sizing: border-box;
+    width: 100%;
+    position: absolute;
+}
+
+.main__output__bloque__texto__caret{
+    animation: blink_background 1s step-end infinite;
+    background-color: var(--color-primario);
+  }
+
+@keyframes blink_background {
+    from,
+    to {
+        background-color: transparent;
+    }
+    50% {
+        background-color: var(--color-primario);
+    }
+}
+  
+
+.main__output__bloque__botones{
+    width: 100%;
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.main__output__bloque__botones__boton{
+    font: var(--fuente-default);
+    color: var(--color-primario);
+    background-color: transparent;
+    font-size: 1.3rem;
+    font-weight: 200;
+    text-decoration: none;
+    display: flex;
+}
+
+.main__output__bloque__botones__boton:hover{
+    cursor: pointer; 
+}
+
+.main__output__bloque__botones__boton:hover > .boton__codeSymbol{
+    display: block;
+}
 
 /*
 * FOOTER
