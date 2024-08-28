@@ -1,7 +1,9 @@
 const NOMBRE_DIV_WRITER = '#div_writer';
 const NOMBRE_SPAN_WRITER = "#span_writer";
+const NOMBRE_TEXT_AREA_WRITER = "#input_writer";
 const NOMBRE_CARET_WRITER = "#caret_writer";
 const DEFAULT_TEXT_WRITER = ">\u00A0";
+const TEXTO_WRITER_AFTER_LOAD = "<<escriba aquí>>";
 
 const NOMBRE_DIV_READER = "#div_reader";
 const NOMBRE_SPAN_READER = "#span_reader";
@@ -17,16 +19,18 @@ const TEXTO_BUTTON_READER_COPIAR = "copiar texto";
 const TEXTO_BUTTON_READER_TERMINAR = "terminar escritura";
 
 const NOMBRE_CLASE_HIDEN = "hiden";
+const NOMBRE_CLASE_NOTHIDEN = "nothiden";
 
 const MENSAJE_TEXTO_VACIO = "querido <<nombre sujeto de prueba>>, por favor ingrese algún texto en el primer panel.";
 
 /*ATRIBUTOS*/
 /*----writer-----*/
-let writerIsFocused = false;
+let textoAnteriorWriter = DEFAULT_TEXT_WRITER;
+let seleccionAnterior = {start:DEFAULT_TEXT_WRITER.length,end:DEFAULT_TEXT_WRITER.length};
 let isWriterTextSelected = false;
-let arrayPostionWriterTextSelected = [];
 let writerContainer = document.querySelector(NOMBRE_DIV_WRITER);
-let writer = document.querySelector(NOMBRE_SPAN_WRITER);
+let writer = document.querySelector(NOMBRE_TEXT_AREA_WRITER);
+let writerBackground = document.querySelector(NOMBRE_SPAN_WRITER);
 
 /*----reader-----*/
 let reader = document.querySelector(NOMBRE_SPAN_READER);
@@ -38,7 +42,7 @@ let textoReader = "";
 
 let imgContainer = document.querySelector(NOMBRE_DIV_IMAGEN);
 
-/*----encripta-----*/
+/*----encriptador-----*/
 const listaTextosEncriptador = [
     {text:'e',replace:'enter',textRegex:'e{1}',replaceRegex:'enter{1}'},
     {text:'i',replace:'imes',textRegex:'i{1}',replaceRegex:'imes{1}'},
@@ -48,57 +52,53 @@ const listaTextosEncriptador = [
 ]
 
 /*EVENTOS*/
-writerContainer.addEventListener('click', writerOnFocus);
-writerContainer.addEventListener('blur', writerLostFocus);
-document.body.addEventListener('keydown', (ev) => modifyLastLetterToWriter(ev));
-document.body.addEventListener('paste', (ev) => pasteTextToWriter(ev));
+window.addEventListener('load', escribirTextoBackgroundLoad);
 document.addEventListener("selectionchange", modifySelectedTextFromWriter);
+writer.addEventListener('input', (ev) =>{checkInputWriter(ev);});
+writer.addEventListener('scroll', (sincronizarScrolls));
 
 /*FUNCIONES*/
 /*-----WRITER-------*/
-function modifyLastLetterToWriter(ev){
-    if(writerIsFocused){
-        var caretNode = document.querySelector(NOMBRE_CARET_WRITER);
-        writer.removeChild(caretNode);
-        var previousText = writer.textContent;
-        if(ev.key.length == 1 && !ev.ctrlKey && esTextoLetrasMinusculas(ev.key)){
-            if(isWriterTextSelected){
-                writer.textContent = previousText.substring(0,arrayPostionWriterTextSelected[0]) + ev.key + previousText.substring(arrayPostionWriterTextSelected[1], previousText.length);
-                isWriterTextSelected = false;
-                arrayPostionWriterTextSelected = [];
-            }
-            else
-                writer.textContent = previousText + ev.key;
-        }else if((ev.key == "Backspace" || ev.key == "Delete") && previousText != DEFAULT_TEXT_WRITER){
-            if(isWriterTextSelected){
-                writer.textContent = previousText.substring(0,arrayPostionWriterTextSelected[0]) + previousText.substring(arrayPostionWriterTextSelected[1], previousText.length);
-                isWriterTextSelected = false;
-                arrayPostionWriterTextSelected = [];
-            }
-            else if(ev.key == "Backspace")
-                writer.textContent = previousText.slice(0,-1)
+function checkInputWriter(input){
+    var nuevoTexto = writer.value;   
+    if(input.inputType === 'deleteContentBackward'){
+        if(writer.selectionStart < DEFAULT_TEXT_WRITER.length){
+            writer.value = textoAnteriorWriter;
+            writer.selectionEnd = seleccionAnterior.end;
+            writer.selectionStart = seleccionAnterior.start;
+        }else{
+            textoAnteriorWriter = nuevoTexto;
+            seleccionAnterior.end = writer.selectionEnd;
+            seleccionAnterior.start = writer.selectionStart;
         }
-        writer.appendChild(caretNode);
+    }else{
+        if(esTextoLetrasMinusculas(nuevoTexto.substring(DEFAULT_TEXT_WRITER.length, nuevoTexto.length))){
+            textoAnteriorWriter = nuevoTexto;
+            seleccionAnterior.end = writer.selectionEnd;
+            seleccionAnterior.start = writer.selectionStart;
+        }else{
+            writer.value = textoAnteriorWriter;
+            writer.selectionEnd = seleccionAnterior.end;
+            writer.selectionStart = seleccionAnterior.start;
+        }
     }
+    modificarTextoBackground();
 }
 
-function pasteTextToWriter(ev){
-    if(writerIsFocused){
-        var paste = (ev.clipboardData || window.clipboardData).getData("text");
-        var caretNode = document.querySelector(NOMBRE_CARET_WRITER);
-        writer.removeChild(caretNode);
-        var previousText = writer.textContent;
-        if(esTextoLetrasMinusculas(paste)){
-            if(isWriterTextSelected){
-                writer.textContent = previousText.substring(0,arrayPostionWriterTextSelected[0]) + paste + previousText.substring(arrayPostionWriterTextSelected[1], previousText.length);
-                isWriterTextSelected = false;
-                arrayPostionWriterTextSelected = [];
-            }
-            else
-                writer.textContent = previousText + paste;
-        }
-        writer.appendChild(caretNode);
-    }
+function modificarTextoBackground(){
+    writerBackground.classList.remove(NOMBRE_CLASE_NOTHIDEN);
+    var caretNode = document.querySelector(NOMBRE_CARET_WRITER);
+    writerBackground.removeChild(caretNode);
+    writerBackground.textContent = textoAnteriorWriter.substring(0,seleccionAnterior.start);
+    writerBackground.appendChild(caretNode);
+    writerBackground.innerHTML += textoAnteriorWriter.substring(seleccionAnterior.start,textoAnteriorWriter.length);
+}
+
+function escribirTextoBackgroundLoad(){
+    var caretNode = document.querySelector(NOMBRE_CARET_WRITER);
+    writerBackground.removeChild(caretNode);
+    writerBackground.textContent = textoAnteriorWriter + TEXTO_WRITER_AFTER_LOAD;
+    writerBackground.appendChild(caretNode);
 }
 
 function modifySelectedTextFromWriter(){
@@ -108,37 +108,36 @@ function modifySelectedTextFromWriter(){
         arrayPostionWriterTextSelected = [];
         return;
     }
-    var range = window.getSelection().getRangeAt(0);
-    var texto = "";    
-    if(range.startContainer.parentNode.isSameNode(writer) && range.endContainer.parentNode.isSameNode(writer)){
-        var startOffset = range.startOffset < DEFAULT_TEXT_WRITER.length ? DEFAULT_TEXT_WRITER.length : range.startOffset;
-        var endOffset = range.endOffset < startOffset ? startOffset : range.endOffset;
-        if(startOffset == endOffset){
-            isWriterTextSelected = false;
-            arrayPostionWriterTextSelected = [];
-        }else{
-            isWriterTextSelected = true;
-            arrayPostionWriterTextSelected = [startOffset,endOffset];
+    var range = window.getSelection().getRangeAt(0);   
+    if(range.startContainer.isSameNode(writerContainer) && range.endContainer.isSameNode(writerContainer)){
+        isWriterTextSelected = true;
+        var limiteInferior = DEFAULT_TEXT_WRITER.length;
+        if(writer.selectionStart < limiteInferior){
+            var desplazamiento = limiteInferior - writer.selectionStart;
+            writer.selectionEnd = writer.selectionEnd + desplazamiento;
+            writer.selectionStart = writer.selectionStart + desplazamiento;
         }
+        seleccionAnterior.end = writer.selectionEnd;
+        seleccionAnterior.start = writer.selectionStart;
+        modificarTextoBackground();
     }else{
         isWriterTextSelected = false;
-        arrayPostionWriterTextSelected = [];
     }
 }
 
-function writerOnFocus(){
-    writerIsFocused = true;
-}
-
-function writerLostFocus(){
-    writerIsFocused = false;
-}
-
 function esTextoLetrasMinusculas(texto){
-    var textoRegex = "([a-z ])";
+    var textoRegex = "([a-z ñ])";
     var flagsRegex = "g";
     var regex = new RegExp( textoRegex + '{' + texto.length + '}', flagsRegex);
     return regex.test(texto);
+}
+
+function sincronizarScrolls(){
+    writerBackground.scrollTop = writer.scrollTop;
+}
+
+function obtenerTextoWriter(){
+    return writer.value.substring(DEFAULT_TEXT_WRITER.length ,writer.value.length);
 }
 
 /*------READER------*/
@@ -239,8 +238,7 @@ function botonReaderHandler(){
 /*------ENCRIPTADOR------*/
 function encriptarTextoWriter(){
     /*texto writer*/
-    var first = writer.firstChild;
-    var textoWriter = first.textContent.substring(DEFAULT_TEXT_WRITER.length, first.textContent.length);
+    var textoWriter = obtenerTextoWriter();
     /*Activar reader*/
     habilitarReader();
     /*Escribir texto encriptado en reader*/
@@ -249,8 +247,7 @@ function encriptarTextoWriter(){
 
 function desencriptarTextoWriter(){
     /*texto writer*/
-    var first = writer.firstChild;
-    var textoWriter = first.textContent.substring(DEFAULT_TEXT_WRITER.length, first.textContent.length);
+    var textoWriter = obtenerTextoWriter();
     /*Activar reader*/
     habilitarReader();
     /*Escribir texto encriptado en reader*/
